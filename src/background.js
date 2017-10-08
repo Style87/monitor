@@ -79,7 +79,6 @@ app.on('ready', () => {
   })
   
   ipcMain.on('check-for-update', function(){
-    mainWindow.send('update-message', 'CHECKING');
     autoUpdater.checkForUpdates();
   })
 });

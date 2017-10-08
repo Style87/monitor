@@ -41,14 +41,9 @@ const app = remote.app;
 const appDir = jetpack.cwd(app.getAppPath());
 const manifest = appDir.read('package.json', 'json');
 import 'bootstrap-colorpicker';
-import tether from 'tether';
 var Bootstrap = require('bootstrap');
 
 const dbFile = path.join(app.getPath('userData'), 'db.json');
-
-// autoUpdater.logger = log;
-// autoUpdater.logger.transports.file.level = 'info';
-// log.info('App starting...');
 
 var NavigationView = BaseView.extend({
     name:'NavigationView',
