@@ -229,7 +229,7 @@ var NavigationView = BaseView.extend({
             $('#colorpicker').colorpicker();
             
             ipcRenderer.on('update-message', function(e, text){
-              $('#action').text(text);
+              $('#action').html(text);
             });
             
             ipcRenderer.send('check-for-update');
