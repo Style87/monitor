@@ -1,0 +1,237 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+#content {
+  height:100%;
+}
+
+/* splash */
+#splash {
+  width:100%;
+  height:100%;
+  background-color: #000;
+  color: #9d9d9d;
+  font-family: serif;
+}
+#splash #text {
+  position: absolute;
+  
+  width: 700px;
+  height:300px;
+  
+  top: 50%;
+  left: 50%;
+
+  margin-top: -150px;
+  margin-left: -350px;
+
+  text-align: center;
+}
+
+/* navbar */
+.navbar-fixed-left {
+  width: 140px;
+  position: fixed;
+  border-radius: 0;
+  height: 100%;
+}
+
+.navbar-fixed-left .navbar-nav > li {
+  float: none;  /* Cancel default li float: left */
+  width: 139px;
+}
+
+.navbar-fixed-left + .container {
+  padding-left: 160px;
+}
+
+.navbar-fixed-left .navbar-nav > li > label {
+  border-top: 1px solid #333;
+}
+
+.navbar-fixed-left .navbar-nav > li > label, #nav-buttons {
+  padding: 5px;
+  margin-bottom: 0px;
+  color: #9d9d9d;
+  line-height: 20px;
+  position: relative;
+  display: block;
+  text-decoration: none;
+  background-color: transparent;
+  font-weight: normal;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+.nav-button {
+  color: #9d9d9d;
+  line-height: 14px;
+  font-size: 14px;
+  text-decoration: none;
+  background-color: transparent;
+  font-weight: normal;
+  overflow: hidden;
+}
+#nav-buttons {
+  padding: 0px;
+}
+#nav-buttons table {
+  margin-bottom: 0px;
+}
+#nav-buttons table tr {
+  border: none;
+}
+#nav-buttons table tr td {
+  width: 33.333333%;
+  text-align: center;
+  border: none;
+  border-collapse: collapse;
+  line-height: 14px;
+  font-size: 14px
+}
+
+#nav-buttons table tr td {
+  padding:4px 0px;
+}
+.btn-control {
+  margin-top:.2em;
+  padding-right: 5px;
+}
+.navbar-nav li .fa-square-spacer {
+  color:#222;
+}
+
+#settings {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  
+  padding: 5px;
+  margin-bottom: 0px;
+  color: #9d9d9d;
+  line-height: 20px;
+  display: block;
+  text-decoration: none;
+  background-color: transparent;
+  font-weight: normal;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  text-align: center;
+  border-top:1px solid gray;
+}
+
+/* Body */
+
+.file-hidden {
+  display: none;
+}
+.settings-hidden {
+  display: none;
+}
+
+#file-output {
+  background-color: #111;
+  margin-left: 140px;
+  overflow: auto;
+  padding: 5px;
+}
+.file-line p {
+  display: inline;
+}
+.spacer {
+  min-height:15px;
+}
+
+
+/* The switch - the box around the slider */
+.switch {
+  top: 0px;
+  margin: 0px;
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 14px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {display:none;}
+
+/* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 10px;
+    width: 10px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(10px);
+    -ms-transform: translateX(10px);
+    transform: translateX(10px);
+  }
+
+/* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+/* switch end*/
+
+/* Add some padding inside the card container */
+.container {
+  padding: 0px;
+  margin:0px;
+}
+
+/* font awesome */
+.fa-rotate-45 {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+#settings-body hr {
+  margin-top: 0px;
+}
+
+.settings-section {
+  padding:0px 15px;
+  margin-bottom: 20px;
+}
