@@ -15,6 +15,7 @@ const { BrowserWindow, protocol, ipcMain } = require('electron');
 const log = require('electron-log');
 const { autoUpdater } = require("electron-updater");
 
+autoUpdater.autoDownload = false;
 autoUpdater.logger = log;
 autoUpdater.logger.transports.file.level = 'info';
 log.info('App starting...');
@@ -69,10 +70,10 @@ app.on('ready', () => {
     sendStatusToWindow('Checking for update...');
   })
   autoUpdater.on('update-available', (info) => {
-    sendStatusToWindow('Update available.');
+    sendStatusToWindow('<a href="https://github.com/Style87/monitor/releases/latest" class="js-external-link">Update available.</a>');
   })
   autoUpdater.on('update-not-available', (info) => {
-    sendStatusToWindow('Update not available.');
+    sendStatusToWindow('Up to date.');
   })
   autoUpdater.on('error', (err) => {
     sendStatusToWindow('Error in auto-updater.');
