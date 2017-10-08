@@ -23,7 +23,10 @@
     "nsis": {
       "perMachine": true
     },
-    "publish": null,
+    "publish": {
+      "provider": "github",
+      "releaseType": "release"
+    },
     "compression": "maximum"
   },
   "scripts": {
