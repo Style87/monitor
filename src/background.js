@@ -36,7 +36,7 @@ const setApplicationMenu = () => {
     menus.push(devMenuTemplate);
   }
 
-  Menu.setApplicationMenu(menus.length > 0 ? menus : null);
+  Menu.setApplicationMenu(menus.length > 0 ? Menu.buildFromTemplate(menus) : null);
 };
 
 // Save userData in separate folders for each environment.
