@@ -24,8 +24,7 @@
       "perMachine": true
     },
     "publish": {
-      "provider": "github",
-      "releaseType": "release"
+      "provider": "github"
     },
     "compression": "maximum"
   },
