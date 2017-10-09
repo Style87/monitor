@@ -7,6 +7,7 @@ import path from 'path';
 import url from 'url';
 import { app, Menu } from 'electron';
 import { devMenuTemplate } from './menu/dev_menu_template';
+import { applicationMenuTemplate } from './menu/application_menu_template';
 import { editMenuTemplate } from './menu/edit_menu_template';
 import { fileMenuTemplate } from './menu/file_menu_template';
 import createWindow from './helpers/window';
@@ -26,13 +27,16 @@ import env from './env';
 
 const setApplicationMenu = () => {
   const menus = [];
+  if (process.platform == 'darwin') {
+    menus.push(applicationMenuTemplate);
+    menus.push(editMenuTemplate);
+  }
+
   if (env.name !== 'production') {
     menus.push(devMenuTemplate);
-    Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
   }
-  else {
-    Menu.setApplicationMenu(null);
-  }
+
+  Menu.setApplicationMenu(menus.length > 0 ? menus : null);
 };
 
 // Save userData in separate folders for each environment.
