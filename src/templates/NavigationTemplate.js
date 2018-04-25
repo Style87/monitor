@@ -23,8 +23,15 @@ var template = `
     <% _.forEach(collection, function(file, index){ %>
       <li>
         <label class="file" data-id="<%= file.id %>">
-          <i class="fa fa-square" style="color:<%= file.color %>"></i> <%= file.nickname %><br>
-          <i class="fa fa-square fa-square-spacer"></i>
+          <% if (file.error) {%>
+            <i class="fa fa-exclamation-triangle text-danger" title="<%= file.errorMessage %>"></i>
+          <% } else { %>
+            <i class="fa fa-square" style="color:<%= file.color %>"></i>
+          <% } %>
+           <%= file.nickname %><br>
+           <% if (file.filter) { %>
+             <i class="fa fa-search" title="<%= file.filter %>"></i>
+          <% } %>
           <i class="fa fa-trash pull-right btn-control" data-action="remove" data-id="<%= file.id %>"></i>
           <i class="fa <%= file.play ? 'fa-pause' : 'fa-play' %> pull-right btn-control" data-action="<%= file.play ? 'pause' : 'play' %>" data-id="<%= file.id %>"></i>
           <i class="fa fa-times-rectangle-o pull-right btn-control" data-action="clear" data-id="<%= file.id %>"></i>

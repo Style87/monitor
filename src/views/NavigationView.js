@@ -10,6 +10,7 @@
  *      SettingsModalView.onSettingsChanged
  *  Consumes
  *      FileModalView.onFileSaved
+ *      FileView.onFileSaved
  */
  var $ = require('jquery');
  window.$ = $;
@@ -69,7 +70,11 @@ var NavigationView = BaseView.extend({
         $('body').on('FileModalView.onFileSaved', function(e, id){
             self.render();
         });
-        
+
+        $('body').on('FileView.onFileSaved', function(e, id){
+            self.render();
+        });
+
         return BaseView.prototype.initialize.call(this);
     },
 
@@ -92,13 +97,14 @@ var NavigationView = BaseView.extend({
             events: {
                 'click #btn-save-file' : function(e) {
                     e.stopPropagation();
-                    
+
                     var id = parseInt($('#id').val())
                         , nickname = $('#nickname').val()
                         , fullPath = path.resolve($('#fullPath').val())
                         , fullPathGroup = $('#fullPath').closest('.form-group')
                         , jsonFormat = $('#jsonFormat').val()
                         , color = $('#colorpicker input').val()
+                        , logLength = $('#logLength').val()
                         , filter = $('#filter').val()
                         , fileName = path.basename(fullPath)
                         , fileExists = fs.existsSync(fullPath)
@@ -114,19 +120,21 @@ var NavigationView = BaseView.extend({
                         fullPathGroup.find('.help-block').show();
                         return false;
                     }
-        
+
                     if (isNaN(id)) {
                         var file = {
                             id : Date.now(),
                             color: color,
+                            logLength: logLength,
                             fileName: fileName,
                             fullPath: fullPath,
                             jsonFormat: jsonFormat,
                             play: true,
                             nickname: nickname,
-                            filter: filter
+                            filter: filter,
+                            error: false,
                         };
-        
+
                         db
                             .get('files')
                             .push(file)
@@ -136,7 +144,7 @@ var NavigationView = BaseView.extend({
                                 $('body').trigger('FileModalView.onFileAdded', [file.id]);
                                 mSelf.close();
                             });
-        
+
                     }
                     else {
                         var file = db
@@ -146,8 +154,11 @@ var NavigationView = BaseView.extend({
                         file.jsonFormat = jsonFormat;
                         file.nickname = nickname;
                         file.color = color;
+                        file.logLength = logLength;
                         file.filter = filter;
-        
+                        file.fileName = fileName;
+                        file.fullPath = fullPath;
+
                         db
                             .get('files')
                             .find({ id: id })
@@ -168,7 +179,7 @@ var NavigationView = BaseView.extend({
                 var red = Math.random() * 256 >> 0;
                 var green = Math.random() * 256 >> 0;
                 var blue = Math.random() * 256 >> 0;
-        
+
                 // mix the color
                 if (mix != null) {
                     red = (red + mix.red) / 2 >> 0;
@@ -202,13 +213,13 @@ var NavigationView = BaseView.extend({
                 , filter = $('#filter').val()
                 , db = lowdb(dbFile, { storage: require('lowdb/lib/storages/file-async') })
                 , mSelf = this;
-              
+
               var settings = db
                   .get('settings')
                   .value();
               settings.color = color;
               settings.filter = filter;
-        
+
               db
                   .get('settings')
                   .assign(settings)
@@ -219,19 +230,19 @@ var NavigationView = BaseView.extend({
                   });
             },
             'click #download-update': function() {
-              
+
             },
             'click #check-update': function(){
-              
+
             }
           },
           afterRender: function() {
             $('#colorpicker').colorpicker();
-            
+
             ipcRenderer.on('update-message', function(e, text){
               $('#action').html(text);
             });
-            
+
             ipcRenderer.send('check-for-update');
           },
         });

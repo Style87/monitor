@@ -25,6 +25,12 @@ let template = `<input type="hidden" id="id" value="<%= options.file ? options.f
 </div>
 
 <div class="form-group">
+    <label>Log Length</label>
+    <input type="text" id="logLength" class="form-control" value="<%= options.file ? options.file.logLength : '' %>">
+    <p class="help-block">The maximum number of log lines to display.</p>
+</div>
+
+<div class="form-group">
     <label>Filter</label>
     <input type="text" id="filter" class="form-control" value="<%= options.file ? options.file.filter : '' %>">
     <p class="help-block">Filter logs from this file.</p>
