@@ -14,7 +14,7 @@ let template = `<input type="hidden" id="id" value="<%= options.file ? options.f
 <div class="form-group">
     <label>Format</label>
     <input type="text" id="jsonFormat" class="form-control" value="<%= options.file ? options.file.jsonFormat : '' %>">
-    <p class="help-block">Unserscore template to format the json line.</p>
+    <p class="help-block"><a href="http://underscorejs.org/" class="js-external-link">Unserscore</a> template to format the json line.</p>
 </div>
 
 <div class="form-group">
