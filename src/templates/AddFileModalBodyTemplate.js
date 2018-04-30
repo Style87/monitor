@@ -34,6 +34,7 @@ let template = `<input type="hidden" id="id" value="<%= options.file ? options.f
     <label>Filter</label>
     <input type="text" id="filter" class="form-control" value="<%= options.file ? options.file.filter : '' %>">
     <p class="help-block">Filter logs from this file.</p>
+    <p class="help-block">To filter out use the following expression replacing <i>SearchTerm</i> with your value. <b>^((?!SearchTerm)[\\s\\S])*$</b></p>
 </div>`
 
 export { template };
