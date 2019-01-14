@@ -95,13 +95,34 @@ var NavigationView = BaseView.extend({
             bodyTemplate: _.template(AddFileModalBodyTemplate),
             footerTemplate: _.template(AddFileModalFooterTemplate),
             events: {
+                'click #checkbox-is-remote' : function (e) {
+                  e.stopPropagation();
+                  var isChecked = $('#checkbox-is-remote').is(':checked');
+                  if (isChecked) {
+                    $('#fullPath').val('');
+                    $('.local-file').addClass('hide');
+                    $('.remote-file').removeClass('hide');
+                  }
+                  else {
+                    $('#remoteHost').val('');
+                    $('#remotePort').val('');
+                    $('#remoteChannel').val('');
+                    $('.remote-file').addClass('hide');
+                    $('.local-file').removeClass('hide');
+                  }
+                },
                 'click #btn-save-file' : function(e) {
                     e.stopPropagation();
 
                     var id = parseInt($('#id').val())
                         , nickname = $('#nickname').val()
+                        , isRemote = $('#checkbox-is-remote').is(':checked')
                         , fullPath = path.resolve($('#fullPath').val())
                         , fullPathGroup = $('#fullPath').closest('.form-group')
+                        , remoteHost = $('#remoteHost').val()
+                        , remotePort = $('#remotePort').val()
+                        , remoteChannel = $('#remoteChannel').val()
+                        , remoteToken = $('#remoteToken').val()
                         , jsonFormat = $('#jsonFormat').val()
                         , color = $('#colorpicker input').val()
                         , logLength = $('#logLength').val()
@@ -114,7 +135,7 @@ var NavigationView = BaseView.extend({
                     fullPathGroup.removeClass('has-error');
                     fullPathGroup.find('.help-block').hide();
 
-                    if (!fileExists) {
+                    if (!isRemote && !fileExists) {
                         console.error("File doesn't exist.");
                         fullPathGroup.addClass('has-error');
                         fullPathGroup.find('.help-block').show();
@@ -133,6 +154,11 @@ var NavigationView = BaseView.extend({
                             nickname: nickname,
                             filter: filter,
                             error: false,
+                            isRemote: isRemote,
+                            remoteHost: remoteHost,
+                            remotePort: remotePort,
+                            remoteChannel: remoteChannel,
+                            remoteToken: remoteToken
                         };
 
                         db
@@ -158,6 +184,11 @@ var NavigationView = BaseView.extend({
                         file.filter = filter;
                         file.fileName = fileName;
                         file.fullPath = fullPath;
+                        file.isRemote = isRemote;
+                        file.remoteHost = remoteHost;
+                        file.remotePort = remotePort;
+                        file.remoteChannel = remoteChannel;
+                        file.remoteToken = remoteToken;
 
                         db
                             .get('files')
