@@ -2,6 +2,7 @@
  *  Exposes
  *      FileView.output
  *  Consumes
+ *      FileModalView.onFileEdited
  *      NavigationView.onPlayFile
  *      NavigationView.onPauseFile
  */
@@ -15,7 +16,6 @@ import lowdb from 'lowdb';
 import path from 'path';
 import fs from 'fs';
 import { remote } from 'electron';
-import io from 'socket.io-client';
 
 const app = remote.app;
 const dbFile = path.join(app.getPath('userData'), 'db.json');
@@ -75,10 +75,6 @@ var FileView = Backbone.View.extend({
       if (!this.model.isRemote) {
         this.tailFile.unwatch();
       }
-      else {
-        this.socket.emit('unwatch', this.model.remoteChannel);
-        this.socket.close();
-      }
 
       return this;
     },
@@ -120,36 +116,19 @@ var FileView = Backbone.View.extend({
         });
       }
       else {
-        var URL_SERVER = this.model.remoteHost + ':' + this.model.remotePort + '?token=' + this.model.remoteToken;
-        this.socket = io(URL_SERVER);
-
-        this.socket.on('connected', function(data) {
-          self.socket.emit('watch', self.model.remoteChannel);
-          if (self.model.error) {
+        $('body')
+          .on(`HomeView.${this.model.remoteHost}.${this.model.remoteChannel}.onLine`, function(e, data){
+            e.stopPropagation();
+            self.render(data);
+          })
+          .on(`HomeView.${this.model.remoteHost}.${this.model.remoteChannel}.onError`, function(e, data){
+            e.stopPropagation();
+            self.setError(data);
+          })
+          .on(`HomeView.${this.model.remoteHost}.${this.model.remoteChannel}.onClearError`, function(e, data){
+            e.stopPropagation();
             self.clearError();
-          }
-        });
-
-        this.socket.on('line', function(data) {
-          self.render(data);
-        });
-
-        this.socket.on('channel-closed', function(data) {
-          self.close();
-        });
-
-        this.socket.on('channel-error', function(data) {
-          console.error('Error with file:', self.model);
-          console.error(data);
-
-          self.setError(data);
-        });
-
-        this.socket.on('disconnect', function() {
-          self.setError('Disconnected.');
-        });
-
-        this.socket.connect();
+          })
       }
 
       this.play = this.model.play;
@@ -159,6 +138,14 @@ var FileView = Backbone.View.extend({
       }
 
       $('body')
+          .on('FileModalView.onFileEdited', function(e, id, newFile, oldFile){
+              id = parseInt(id);
+              if (id != self.model.id) {
+                  return;
+              }
+
+              self.model = newFile;
+          })
           .on('NavigationView.onPlayFile', function(e, id){
               id = parseInt(id);
               if (id == self.model.id) {

@@ -167,16 +167,33 @@ var NavigationView = BaseView.extend({
                             .write()
                             .then(function(){
                                 $('body').trigger('FileModalView.onFileSaved', [file.id]);
-                                $('body').trigger('FileModalView.onFileAdded', [file.id]);
+                                $('body').trigger('FileModalView.onFileAdded', [file.id, file]);
                                 mSelf.close();
                             });
 
                     }
                     else {
-                        var file = db
+                        var oldFile = Object.assign({}, db
                             .get('files')
                             .find({ id: id })
-                            .value();
+                            .value())
+                          , file = db
+                              .get('files')
+                              .find({ id: id })
+                              .value()
+                          , duplicateFile = db
+                              .get('files')
+                              .find({
+                                isRemote: isRemote,
+                                remoteHost: remoteHost,
+                                remotePort: remotePort,
+                                remoteChannel: remoteChannel
+                              })
+                              .value();
+                        if (duplicateFile && duplicateFile.id != id) {
+                          // TODO: Output an error message about the duplicate.
+                          return false;
+                        }
                         file.jsonFormat = jsonFormat;
                         file.nickname = nickname;
                         file.color = color;
@@ -197,7 +214,7 @@ var NavigationView = BaseView.extend({
                             .write()
                             .then(function(){
                                 $('body').trigger('FileModalView.onFileSaved', [file.id]);
-                                $('body').trigger('FileModalView.onFileEdited', [file.id]);
+                                $('body').trigger('FileModalView.onFileEdited', [file.id, file, oldFile]);
                                 mSelf.close();
                             });
                     }
