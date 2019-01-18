@@ -1,10 +1,11 @@
 /***
  *  Exposes
  *      FileView.output
+ *      FileView.onFileSaved
+ *      FileView.`this.model.id`.onFileSaved
  *  Consumes
- *      FileModalView.onFileEdited
- *      NavigationView.onPlayFile
- *      NavigationView.onPauseFile
+ *      NavigationView.`this.model.id`.onPlayFile
+ *      NavigationView.`this.model.id`.onPauseFile
  */
  import 'jquery';
  var _ = require('underscore');
@@ -75,6 +76,17 @@ var FileView = Backbone.View.extend({
       if (!this.model.isRemote) {
         this.tailFile.unwatch();
       }
+      else {
+        var room = `${this.model.remoteHost}.${this.model.remoteChannel}`;
+        $('body')
+          .unbind(`HomeView.${room}.onLine`)
+          .unbind(`HomeView.${room}.onError`)
+          .unbind(`HomeView.${room}.onClearError`);
+      }
+
+      $('body')
+        .unbind(`NavigationView.${this.model.id}.onPlayFile`)
+        .unbind(`NavigationView.${this.model.id}.onPauseFile`);
 
       return this;
     },
@@ -116,16 +128,17 @@ var FileView = Backbone.View.extend({
         });
       }
       else {
+        var room = `${this.model.remoteHost}.${this.model.remoteChannel}`;
         $('body')
-          .on(`HomeView.${this.model.remoteHost}.${this.model.remoteChannel}.onLine`, function(e, data){
+          .on(`HomeView.${room}.onLine`, function(e, data){
             e.stopPropagation();
             self.render(data);
           })
-          .on(`HomeView.${this.model.remoteHost}.${this.model.remoteChannel}.onError`, function(e, data){
+          .on(`HomeView.${room}.onError`, function(e, data){
             e.stopPropagation();
             self.setError(data);
           })
-          .on(`HomeView.${this.model.remoteHost}.${this.model.remoteChannel}.onClearError`, function(e, data){
+          .on(`HomeView.${room}.onClearError`, function(e, data){
             e.stopPropagation();
             self.clearError();
           })
@@ -138,25 +151,11 @@ var FileView = Backbone.View.extend({
       }
 
       $('body')
-          .on('FileModalView.onFileEdited', function(e, id, newFile, oldFile){
-              id = parseInt(id);
-              if (id != self.model.id) {
-                  return;
-              }
-
-              self.model = newFile;
+          .on(`NavigationView.${this.model.id}.onPlayFile`, function(e, id){
+            self.play = true;
           })
-          .on('NavigationView.onPlayFile', function(e, id){
-              id = parseInt(id);
-              if (id == self.model.id) {
-                  self.play = true;
-              }
-          })
-          .on('NavigationView.onPauseFile', function(e, id){
-              id = parseInt(id);
-              if (id == self.model.id) {
-                  self.play = false;
-              }
+          .on(`NavigationView.${this.model.id}.onPauseFile`, function(e, id){
+            self.play = false;
           });
       $('body').append(this.styleTemplate(this));
 
@@ -186,6 +185,7 @@ var FileView = Backbone.View.extend({
             .write()
             .then(function(){
                 $('body').trigger('FileView.onFileSaved', [self.model.id]);
+                $('body').trigger(`FileView.${self.model.id}.onFileSaved`);
             });
       }
 
@@ -214,6 +214,7 @@ var FileView = Backbone.View.extend({
           .write()
           .then(function(){
               $('body').trigger('FileView.onFileSaved', [self.model.id]);
+              $('body').trigger(`FileView.${self.model.id}.onFileSaved`);
           });
       if (errorMessage == 'Disconnected.') {
 
@@ -236,6 +237,7 @@ var FileView = Backbone.View.extend({
           .write()
           .then(function(){
               $('body').trigger('FileView.onFileSaved', [self.model.id]);
+              $('body').trigger(`FileView.${self.model.id}.onFileSaved`);
           });
     }
 });

@@ -6,7 +6,9 @@
  *      NavigationView.toggleScrollToBottom
  *      FileModalView.onFileAdded
  *      FileModalView.onFileEdited
+ *      FileModalView.`id`.onFileEdited
  *      FileModalView.onFileSaved
+ *      FileModalView.`id`.onFileSaved
  *      SettingsModalView.onSettingsChanged
  *  Consumes
  *      FileModalView.onFileSaved
@@ -214,7 +216,9 @@ var NavigationView = BaseView.extend({
                             .write()
                             .then(function(){
                                 $('body').trigger('FileModalView.onFileSaved', [file.id]);
+                                $('body').trigger(`FileModalView.${file.id}.onFileSaved`, [file.id]);
                                 $('body').trigger('FileModalView.onFileEdited', [file.id, file, oldFile]);
+                                $('body').trigger(`FileModalView.${file.id}.onFileEdited`, [file, oldFile]);
                                 mSelf.close();
                             });
                     }
@@ -355,7 +359,7 @@ var NavigationView = BaseView.extend({
                             .data('action', 'pause')
                             .removeClass('fa-play')
                             .addClass('fa-pause');
-                        $('body').trigger('NavigationView.onPlayFile', [id]);
+                        $('body').trigger(`NavigationView.${id}.onPlayFile`, [id]);
                     });
                 break;
             case 'pause':
@@ -368,7 +372,7 @@ var NavigationView = BaseView.extend({
                             .data('action', 'play')
                             .removeClass('fa-pause')
                             .addClass('fa-play');
-                        $('body').trigger('NavigationView.onPauseFile', [id]);
+                        $('body').trigger(`NavigationView.${id}.onPauseFile`, [id]);
                     });;
                 break;
             case 'remove':
