@@ -42,10 +42,15 @@ var FileView = Backbone.View.extend({
         }
 
         if (this.model.jsonFormat != '') {
+          try {
             var line = this.model.jsonFormat
                 , jsonData = JSON.parse(data)
                 , template = _.template(this.model.jsonFormat);
             data = template(jsonData);
+          }
+          catch (e) {
+            // Data didn't parse so lets show all of it.
+          }
         }
 
         var filtered = '';
