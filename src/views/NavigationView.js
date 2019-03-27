@@ -30,6 +30,10 @@ import { template as SettingsModalHeaderTemplate } from '../templates/SettingsMo
 import { template as SettingsModalBodyTemplate } from '../templates/SettingsModalBodyTemplate.js';
 import { template as SettingsModalFooterTemplate } from '../templates/SettingsModalFooterTemplate.js';
 
+import { template as SearchModalHeaderTemplate } from '../templates/SearchModalHeaderTemplate.js';
+import { template as SearchModalBodyTemplate } from '../templates/SearchModalBodyTemplate.js';
+import { template as SearchModalFooterTemplate } from '../templates/SearchModalFooterTemplate.js';
+
 import BackboneModal from '../core/BackboneModal/BackboneModal.js';
 
 import { remote } from 'electron';
@@ -59,6 +63,7 @@ var NavigationView = BaseView.extend({
     events: {
         'click #add-file' : 'onBtnAddFile',
         'click #settings' : 'onBtnSettings',
+        'click .btn-file-search' : 'onBtnSearch',
         'click .file' : 'onEditFile',
         'click .btn-control' : 'onFileAction',
         'click #scroll-to-bottom' : 'onBtnScrollToBottom',
@@ -253,6 +258,7 @@ var NavigationView = BaseView.extend({
                 return "#"+ rr + gg + bb;
             },
         });
+        
         this.sModal = new BackboneModal({
           headerTemplate: _.template(SettingsModalHeaderTemplate),
           bodyTemplate: _.template(SettingsModalBodyTemplate),
@@ -298,6 +304,52 @@ var NavigationView = BaseView.extend({
             ipcRenderer.send('check-for-update');
           },
         });
+        
+        this.searchModal = new BackboneModal({
+            headerTemplate: _.template(SearchModalHeaderTemplate),
+            bodyTemplate: _.template(SearchModalBodyTemplate),
+            footerTemplate: _.template(SearchModalFooterTemplate),
+            events: {
+                'click #btn-save-search' : function(e) {
+                    e.stopPropagation();
+
+                    var id = parseInt($('#id').val())
+                        , fileFilter = $('#file-filter').val()
+                        , globalFilter = $('#global-filter').val()
+                        , db = lowdb(dbFile, { storage: require('lowdb/lib/storages/file-async') })
+                        , mSelf = this
+                        , file = db
+                            .get('files')
+                            .find({ id: id })
+                            .value()
+                        , settings = db
+                            .get('settings')
+                            .value();
+
+                    file.filter = fileFilter;
+                    settings.filter = globalFilter;
+
+                    db
+                        .get('settings')
+                        .assign(settings)
+                        .write()
+                        .then(function(){
+                            $('body').trigger('SettingsModalView.onSettingsChanged');
+                            db
+                                .get('files')
+                                .find({ id: id })
+                                .assign(file)
+                                .write()
+                                .then(function(){
+                                    $('body').trigger('FileModalView.onFileSaved', [file.id]);
+                                    $('body').trigger('FileModalView.onFileEdited', [file.id]);
+                                    mSelf.close();
+                                });
+                        });
+                },
+            },
+        });
+        
         return BaseView.prototype.afterRender.call(this);
     },
 
@@ -340,6 +392,19 @@ var NavigationView = BaseView.extend({
             file: file
         });
         this.mModal.open();
+    },
+
+    onBtnSearch: function(e) {
+        e.stopPropagation();
+        var id = $(e.currentTarget).data('id')
+            , db = lowdb(dbFile, { storage: require('lowdb/lib/storages/file-async') })
+            , file = db.get('files').find({id: id}).value()
+            , settings = db.get('settings').value();
+        this.searchModal.setOptions({
+            file: file,
+            settings: settings,
+        });
+        this.searchModal.open();
     },
 
     onFileAction: function(e) {

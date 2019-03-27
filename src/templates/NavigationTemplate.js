@@ -30,7 +30,7 @@ var template = `
           <% } %>
            <%= file.nickname %><br>
            <% if (file.filter) { %>
-             <i class="fa fa-search" title="<%= file.filter %>"></i>
+             <i class="fa fa-search btn-file-search" title="<%= file.filter %>" data-id="<%= file.id %>"></i>
           <% } %>
           <i class="fa fa-trash pull-right btn-control" data-action="remove" data-id="<%= file.id %>"></i>
           <i class="fa <%= file.play ? 'fa-pause' : 'fa-play' %> pull-right btn-control" data-action="<%= file.play ? 'pause' : 'play' %>" data-id="<%= file.id %>"></i>
